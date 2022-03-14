@@ -20,15 +20,33 @@ class Gameboard {
     }
   }
 
-  placeShip(length, position, isHorizontal) {
-    let ship = new Ship(length);
-
-    for (let i = 0; i < length; i += 1) {
-      let rowOffset = isHorizontal ? 0 : i;
-      let colOffset = isHorizontal ? i : 0;
-
-      this.ships[position.row + rowOffset][position.col + colOffset] = ship;
+  placeShip(ship) {
+    if (!this.#isValidShipPlacement(ship)) {
+      throw new Error('ship cannot be placed outside the board');
     }
+
+    for (let row = ship.start.row; row <= ship.end.row; row += 1) {
+      for (let col = ship.start.col; col <= ship.end.col; col += 1) {
+        this.ships[row][col] = ship;
+      }
+    }
+  }
+
+  receiveAttack(position) {
+    this.ships[position.row][position.col].hit(position);
+  }
+
+  #isValidShipPlacement(ship) {
+    return (this.#isValidPosition(ship.start) && this.#isValidPosition(ship.end));
+  }
+
+  #isValidPosition(position) {
+    return (
+      position.row >= 0 &&
+      position.row < this.size &&
+      position.col >= 0 &&
+      position.col < this.size
+    );
   }
 }
 
