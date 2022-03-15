@@ -97,6 +97,19 @@ class Gameboard {
     }
   }
 
+  allShipsSunk() {
+    for (let ship of this.ships) {
+      if (!ship.isSunk()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  get ships() {
+    return Array.from(this.#ships.values());
+  }
+
   get #nextShipId() {
     let result = this.#shipIdCounter;
     this.#shipIdCounter += 1;

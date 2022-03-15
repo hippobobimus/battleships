@@ -123,4 +123,31 @@ describe('gameboard', () => {
       }
     }
   });
+
+  test('all ships sunk', () => {
+    let size = 10;
+    let g = new Gameboard(size);
+
+    let ships = [
+      new Ship(new Position(0, 0), 3, false),
+      new Ship(new Position(1, 2), 2, true),
+      new Ship(new Position(0, 4), 1, true),
+    ];
+
+    for (let s of ships) {
+      g.placeShip(s);
+    }
+
+    expect(g.allShipsSunk()).toBeFalsy();
+
+    for (let s of ships) {
+      for (let row = s.start.row; row <= s.end.row; row += 1) {
+        for (let col = s.start.col; col <= s.end.col; col += 1) {
+          g.receiveAttack(new Position(row, col));
+        }
+      }
+    }
+
+    expect(g.allShipsSunk()).toBeTruthy();
+  });
 });
