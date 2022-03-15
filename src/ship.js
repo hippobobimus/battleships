@@ -3,14 +3,17 @@ import Position from './position.js';
 class Ship {
   #hitArr;
 
-  constructor(start, length, isHorizontal) {
+  constructor(id, start, length, isHorizontal) {
+    this.id = id;
     this.start = start;
     this.length = length;
     this.isHorizontal = isHorizontal;
+
     this.end = new Position(
       start.row + (isHorizontal ? 0 : length),
       start.col + (isHorizontal ? length : 0)
     );
+
     this.#hitArr = new Array(length);
     this.#hitArr.fill(false);
   }
