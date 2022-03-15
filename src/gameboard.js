@@ -1,4 +1,5 @@
 import Cell from './cell.js';
+import Position from './position.js';
 
 class Gameboard {
   #board;
@@ -27,10 +28,12 @@ class Gameboard {
 
     // check ship is not overlapping any other ships.
     for (let i = 0; i < ship.length; i += 1) {
-      let anotherShip = this.getShip(
+      let p = new Position(
         ship.start.row + (ship.isHorizontal ? 0 : i),
         ship.start.col + (ship.isHorizontal ? i : 0)
       );
+
+      let anotherShip = this.getShip(p);
 
       if (anotherShip !== null) {
         return false;
@@ -49,21 +52,49 @@ class Gameboard {
     this.#ships.set(id, ship);
 
     for (let i = 0; i < ship.length; i += 1) {
-      this.#getCell(
+      let p = new Position(
         ship.start.row + (ship.isHorizontal ? 0 : i),
         ship.start.col + (ship.isHorizontal ? i : 0)
-      ).shipId = id;
+      );
+
+      this.#getCell(p).shipId = id;
     }
   }
 
-  getShip(row, col) {
-    let cell = this.#getCell(row, col);
+  getShip(position) {
+    let cell = this.#getCell(position);
 
     if (cell.shipId === null) {
       return null;
     }
 
     return this.#ships.get(cell.shipId);
+  }
+
+  receiveAttack(position) {
+    let cell = this.#getCell(position);
+
+    cell.attacked = true;
+
+    let ship = this.getShip(position);
+
+    if (ship) {
+      ship.hit(position);
+    }
+  }
+
+  getHitState(position) {
+    let cell = this.#getCell(position);
+
+    if (cell.attacked) {
+      if (cell.shipId === null) {
+        return 'miss';
+      } else {
+        return 'hit';
+      }
+    } else {
+      return '-';
+    }
   }
 
   get #nextShipId() {
@@ -81,8 +112,8 @@ class Gameboard {
     );
   }
 
-  #getCell(row, col) {
-    let idx = row * this.size + col;
+  #getCell(position) {
+    let idx = position.row * this.size + position.col;
 
     return this.#board[idx];
   }

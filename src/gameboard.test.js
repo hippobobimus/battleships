@@ -23,14 +23,16 @@ describe('gameboard', () => {
 
     for (let row = 0; row < size; row += 1) {
       for (let col = 0; col < size; col += 1) {
+        let p = new Position(row, col);
+
         if (
           row === ship.start.row &&
           col >= ship.start.col &&
           col <= ship.end.col
         ) {
-          expect(g.getShip(row, col)).toBe(ship);
+          expect(g.getShip(p)).toBe(ship);
         } else {
-          expect(g.getShip(row, col)).toBeNull();
+          expect(g.getShip(p)).toBeNull();
         }
       }
     }
@@ -49,14 +51,16 @@ describe('gameboard', () => {
 
     for (let row = 0; row < size; row += 1) {
       for (let col = 0; col < size; col += 1) {
+        let p = new Position(row, col);
+
         if (
           row >= ship.start.row &&
           row <= ship.end.row &&
           col === ship.start.col
         ) {
-          expect(g.getShip(row, col)).toBe(ship);
+          expect(g.getShip(p)).toBe(ship);
         } else {
-          expect(g.getShip(row, col)).toBeNull();
+          expect(g.getShip(p)).toBeNull();
         }
       }
     }
@@ -86,5 +90,37 @@ describe('gameboard', () => {
     let ship = new Ship(pos, length, isHor);
 
     expect(() => g.placeShip(ship)).toThrow('cannot place ship here');
+  });
+
+  test('receive attack', () => {
+    let size = 5;
+    let g = new Gameboard(size);
+
+    let length = 3;
+    let pos = new Position(1, 4);
+    let isHor = false;
+
+    let ship = new Ship(pos, length, isHor);
+
+    g.placeShip(ship);
+
+    let hitPos = new Position(2, 4);
+    let missPos = new Position(2, 4);
+    g.receiveAttack(hitPos);
+
+    for (let row = 0; row < size; row += 1) {
+      for (let col = 0; col < size; col += 1) {
+        let p = new Position(row, col);
+        let hitState = g.getHitState(p);
+
+        if (row === hitPos.row && col === hitPos.col) {
+          expect(hitState).toBe('hit');
+        } else if (row === missPos.row && col === missPos.col) {
+          expect(hitState).toBe('miss');
+        } else {
+          expect(hitState).toBe('-');
+        }
+      }
+    }
   });
 });
