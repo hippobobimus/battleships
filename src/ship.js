@@ -1,14 +1,16 @@
+import Position from './position.js';
+
 class Ship {
   #hitArr;
 
   constructor(start, length, isHorizontal) {
     this.start = start;
-    this.end = {
-      row: start.row + (isHorizontal ? 0 : length),
-      col: start.col + (isHorizontal ? length : 0),
-    };
     this.length = length;
     this.isHorizontal = isHorizontal;
+    this.end = new Position(
+      start.row + (isHorizontal ? 0 : length),
+      start.col + (isHorizontal ? length : 0)
+    );
     this.#hitArr = new Array(length);
     this.#hitArr.fill(false);
   }
@@ -20,7 +22,7 @@ class Ship {
       );
     }
 
-    this.#hitArr[this.#getHitArrIdx(position)] = true;
+    this.#hitArr[this.#positionToIndex(position)] = true;
   }
 
   isHit(position) {
@@ -30,7 +32,7 @@ class Ship {
       );
     }
 
-    return this.#hitArr[this.#getHitArrIdx(position)];
+    return this.#hitArr[this.#positionToIndex(position)];
   }
 
   #isWithinShip(position) {
@@ -42,18 +44,9 @@ class Ship {
     );
   }
 
-  #getHitArrIdx(position) {
-    // convert position to local ship coords
-    let localPosition = {
-      row: position.row - this.start.row,
-      col: position.col - this.start.col,
-    };
-
-    if (this.isHorizontal) {
-      return localPosition.col;
-    } else {
-      return localPosition.row;
-    }
+  #positionToIndex(position) {
+    // position is assumed to be within ship.
+    return position.row - this.start.row + position.col - this.start.col;
   }
 
   isSunk() {

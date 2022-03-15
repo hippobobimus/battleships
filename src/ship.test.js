@@ -1,9 +1,10 @@
+import Position from './position.js';
 import Ship from './ship.js';
 
 describe('ship', () => {
   test('check ship instantiation', () => {
     let expected = {
-      start: { row: 2, col: 4 },
+      start: new Position(2, 4),
       length: 9,
       isHorizontal: true,
     };
@@ -17,17 +18,17 @@ describe('ship', () => {
 
   test('check correct position is hit (horizontal ship)', () => {
     let params = {
-      start: { row: 4, col: 2 },
+      start: new Position(4, 2),
       length: 5,
       isHorizontal: true,
     };
     let s = new Ship(params.start, params.length, params.isHorizontal);
 
-    let hitPos = { row: 4, col: 3 };
+    let hitPos = new Position(4, 3);
     s.hit(hitPos);
 
     for (let col = s.start.col; col <= s.end.col; col += 1) {
-      let pos = { row: s.start.row, col };
+      let pos = new Position(s.start.row, col);
 
       if (pos.row === hitPos.row && pos.col === hitPos.col) {
         expect(s.isHit(pos)).toBeTruthy();
@@ -39,18 +40,17 @@ describe('ship', () => {
 
   test('check correct position is hit (vertical ship)', () => {
     let params = {
-      start: { row: 1, col: 3 },
+      start: new Position(1, 3),
       length: 5,
       isHorizontal: false,
     };
     let s = new Ship(params.start, params.length, params.isHorizontal);
 
-    let hitPos = { row: 2, col: 3 };
+    let hitPos = new Position(2, 3);
     s.hit(hitPos);
 
-    // Check vertically
     for (let row = s.start.row; row <= s.end.row; row += 1) {
-      let pos = { row, col: s.start.col };
+      let pos = new Position(row, s.start.col);
 
       if (pos.row === hitPos.row && pos.col === hitPos.col) {
         expect(s.isHit(pos)).toBeTruthy();
@@ -62,13 +62,13 @@ describe('ship', () => {
 
   test('check calling hit with position outside ship throws error', () => {
     let params = {
-      start: { row: 4, col: 7 },
+      start: new Position(4, 7),
       length: 2,
       isHorizontal: true,
     };
     let s = new Ship(params.start, params.length, params.isHorizontal);
 
-    let hitPos = { row: 3, col: 7 };
+    let hitPos = new Position(3, 7);
     expect(() => s.hit(hitPos)).toThrow(
       `position out of bounds: [${hitPos.row}, ${hitPos.col}]`
     );
@@ -76,7 +76,7 @@ describe('ship', () => {
 
   test('check isSunk', () => {
     let params = {
-      start: { row: 2, col: 3 },
+      start: new Position(2, 3),
       length: 4,
       isHorizontal: true,
     };
