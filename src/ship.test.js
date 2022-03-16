@@ -4,92 +4,28 @@ import Ship from './ship.js';
 describe('ship', () => {
   test('check ship instantiation', () => {
     let expected = {
-      start: new Position(2, 4),
       length: 9,
-      isHorizontal: true,
     };
 
-    let s = new Ship(expected.start, expected.length, expected.isHorizontal);
+    let s = new Ship(expected.length);
 
-    expect(s.start).toBe(expected.start);
-    expect(s.end.row).toBe(expected.start.row);
-    expect(s.end.col).toBe(expected.start.col + expected.length - 1);
     expect(s.length).toBe(expected.length);
-    expect(s.isHorizontal).toBe(expected.isHorizontal);
   });
 
-  test('check correct position is hit (horizontal ship)', () => {
+  test('check hit processing', () => {
     let params = {
-      start: new Position(4, 2),
       length: 5,
-      isHorizontal: true,
     };
-    let s = new Ship(params.start, params.length, params.isHorizontal);
+    let s = new Ship(params.length);
 
-    let hitPos = new Position(4, 3);
-    s.hit(hitPos);
 
-    for (let col = s.start.col; col <= s.end.col; col += 1) {
-      let pos = new Position(s.start.row, col);
-
-      if (pos.row === hitPos.row && pos.col === hitPos.col) {
-        expect(s.isHit(pos)).toBeTruthy();
-      } else {
-        expect(s.isHit(pos)).toBeFalsy();
-      }
-    }
-  });
-
-  test('check correct position is hit (vertical ship)', () => {
-    let params = {
-      start: new Position(1, 3),
-      length: 5,
-      isHorizontal: false,
-    };
-    let s = new Ship(params.start, params.length, params.isHorizontal);
-
-    let hitPos = new Position(2, 3);
-    s.hit(hitPos);
-
-    for (let row = s.start.row; row <= s.end.row; row += 1) {
-      let pos = new Position(row, s.start.col);
-
-      if (pos.row === hitPos.row && pos.col === hitPos.col) {
-        expect(s.isHit(pos)).toBeTruthy();
-      } else {
-        expect(s.isHit(pos)).toBeFalsy();
-      }
-    }
-  });
-
-  test('check calling hit with position outside ship throws error', () => {
-    let params = {
-      start: new Position(4, 7),
-      length: 2,
-      isHorizontal: true,
-    };
-    let s = new Ship(params.start, params.length, params.isHorizontal);
-
-    let hitPos = new Position(3, 7);
-    expect(() => s.hit(hitPos)).toThrow(
-      `position out of bounds: [${hitPos.row}, ${hitPos.col}]`
-    );
-  });
-
-  test('check isSunk', () => {
-    let params = {
-      start: new Position(2, 3),
-      length: 4,
-      isHorizontal: true,
-    };
-    let s = new Ship(params.start, params.length, params.isHorizontal);
-
-    expect(s.isSunk()).toBeFalsy();
-
-    for (let col = s.start.col; col <= s.end.col; col += 1) {
-      s.hit(new Position(s.start.row, col));
+    for (let i = 0; i < s.length; i += 1) {
+      expect(s.hits).toBe(i);
+      expect(s.isSunk()).toBeFalsy();
+      s.hit();
     }
 
+    expect(s.hits).toBe(s.length);
     expect(s.isSunk()).toBeTruthy();
   });
 });

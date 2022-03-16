@@ -1,58 +1,26 @@
-import Position from './position.js';
-
 class Ship {
-  #hitArr;
+  #hitsTaken;
 
-  constructor(start, length, isHorizontal) {
-    this.start = start;
+  constructor(length) {
     this.length = length;
-    this.isHorizontal = isHorizontal;
 
-    this.end = new Position(
-      start.row + (isHorizontal ? 0 : length - 1),
-      start.col + (isHorizontal ? length - 1 : 0)
-    );
-
-    this.#hitArr = new Array(length);
-    this.#hitArr.fill(false);
+    this.#hitsTaken = 0;
   }
 
-  hit(position) {
-    if (!this.#isWithinShip(position)) {
-      throw new Error(
-        `position out of bounds: [${position.row}, ${position.col}]`
-      );
+  hit() {
+    if (this.isSunk()) {
+      throw new Error('already sunk!');
     }
 
-    this.#hitArr[this.#positionToIndex(position)] = true;
+    this.#hitsTaken += 1;
   }
 
-  isHit(position) {
-    if (!this.#isWithinShip(position)) {
-      throw new Error(
-        `position out of bounds: [${position.row}, ${position.col}]`
-      );
-    }
-
-    return this.#hitArr[this.#positionToIndex(position)];
-  }
-
-  #isWithinShip(position) {
-    return (
-      position.row >= this.start.row &&
-      position.row <= this.end.row &&
-      position.col >= this.start.col &&
-      position.col <= this.end.col
-    );
-  }
-
-  #positionToIndex(position) {
-    // position is assumed to be within ship.
-    return position.row - this.start.row + position.col - this.start.col;
+  get hits() {
+    return this.#hitsTaken;
   }
 
   isSunk() {
-    return !this.#hitArr.includes(false);
+    return this.#hitsTaken >= this.length;
   }
 }
 
