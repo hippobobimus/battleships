@@ -1,4 +1,3 @@
-import Position from './position.js';
 import Ship from './ship.js';
 
 describe('ship', () => {
