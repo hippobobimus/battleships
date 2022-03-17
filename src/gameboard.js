@@ -88,6 +88,10 @@ class Gameboard {
   receiveAttack(position) {
     let cell = this.#getCell(position);
 
+    if (cell.attacked) {
+      throw new Error('cannot attack the same position again');
+    }
+
     cell.attacked = true;
 
     if (cell.shipId !== null) {

@@ -175,6 +175,24 @@ describe('gameboard', () => {
     }
   });
 
+  test("same position can't be hit twice", () => {
+    let size = 5;
+    let g = new Gameboard(size);
+
+    let length = 3;
+    let pos = new Position(1, 4);
+    let isHor = false;
+
+    g.placeShip(pos, length, isHor);
+
+    let attackPos = new Position(1, 4);
+    g.receiveAttack(attackPos);
+
+    expect(() => g.receiveAttack(attackPos)).toThrow(
+      'cannot attack the same position again'
+    );
+  });
+
   test('all ships sunk', () => {
     let size = 10;
     let g = new Gameboard(size);
