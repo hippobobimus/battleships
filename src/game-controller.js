@@ -40,6 +40,11 @@ class GameController {
     );
   }
 
+  load() {
+    this.playerView.load();
+    this.computerView.load();
+  }
+
   onPlayerAttackInputEvent = (position) => {
     this.computer.gameboard.receiveAttack(position);
   };

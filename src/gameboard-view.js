@@ -10,12 +10,14 @@ class GameboardView {
     this.gameboardSize = gameboardSize;
 
     this.moveInputEvent = new GameEvent();
+  }
 
+  load() {
     this.board = document.createElement('div');
     this.board.classList.add('board');
 
-    for (let row = 0; row < gameboardSize; row += 1) {
-      for (let col = 0; col < gameboardSize; col += 1) {
+    for (let row = 0; row < this.gameboardSize; row += 1) {
+      for (let col = 0; col < this.gameboardSize; col += 1) {
         let cell = document.createElement('div');
 
         cell.classList.add('cell');
