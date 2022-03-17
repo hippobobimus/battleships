@@ -1,9 +1,13 @@
 import Cell from './cell.js';
+import GameEvent from './game-event.js';
 import Position from './position.js';
+import Ship from './ship.js';
 
 class Gameboard {
   #board;
+
   #ships;
+
   #shipIdCounter;
 
   constructor(size) {
@@ -15,27 +19,27 @@ class Gameboard {
     for (let i = 0; i < size * size; i += 1) {
       this.#board.push(new Cell());
     }
+
+    // events
+    this.hitEvent = new GameEvent();
+    this.missEvent = new GameEvent();
+    this.sunkEvent = new GameEvent();
+    this.allShipsSunkEvent = new GameEvent();
   }
 
-  canPlaceShip(ship) {
-    // check ship fits inside board area.
-    if (
-      !this.#isValidPosition(ship.start) ||
-      !this.#isValidPosition(ship.end)
-    ) {
-      return false;
-    }
+  get ships() {
+    return Array.from(this.#ships.values());
+  }
 
-    // check ship is not overlapping any other ships.
-    for (let i = 0; i < ship.length; i += 1) {
+  canPlaceShip(position, length, isHorizontal) {
+    // check ship is not overlapping any other ships and fits inside the board.
+    for (let i = 0; i < length; i += 1) {
       let p = new Position(
-        ship.start.row + (ship.isHorizontal ? 0 : i),
-        ship.start.col + (ship.isHorizontal ? i : 0)
+        position.row + (isHorizontal ? 0 : i),
+        position.col + (isHorizontal ? i : 0)
       );
 
-      let anotherShip = this.getShip(p);
-
-      if (anotherShip !== null) {
+      if (!this.#isValidPosition(p) || this.hasShip(p)) {
         return false;
       }
     }
@@ -43,32 +47,42 @@ class Gameboard {
     return true;
   }
 
-  placeShip(ship) {
-    if (!this.canPlaceShip(ship)) {
+  hasShip(position) {
+    return this.#getCell(position).shipId !== null;
+  }
+
+  placeShip(position, length, isHorizontal) {
+    if (!this.canPlaceShip(position, length, isHorizontal)) {
       throw new Error('cannot place ship here');
     }
+
     let id = this.#nextShipId;
+    let ship = new Ship(length);
 
     this.#ships.set(id, ship);
 
     for (let i = 0; i < ship.length; i += 1) {
       let p = new Position(
-        ship.start.row + (ship.isHorizontal ? 0 : i),
-        ship.start.col + (ship.isHorizontal ? i : 0)
+        position.row + (isHorizontal ? 0 : i),
+        position.col + (isHorizontal ? i : 0)
       );
 
       this.#getCell(p).shipId = id;
     }
   }
 
-  getShip(position) {
-    let cell = this.#getCell(position);
+  placeShipsRandomly(shipLengths) {
+    shipLengths.forEach((length) => {
+      let position = this.#randomPosition();
+      let isHorizontal = Gameboard.#randomBool();
 
-    if (cell.shipId === null) {
-      return null;
-    }
+      while (!this.canPlaceShip(position, length, isHorizontal)) {
+        position = this.#randomPosition();
+        isHorizontal = Gameboard.#randomBool();
+      }
 
-    return this.#ships.get(cell.shipId);
+      this.placeShip(position, length, isHorizontal);
+    });
   }
 
   receiveAttack(position) {
@@ -76,44 +90,47 @@ class Gameboard {
 
     cell.attacked = true;
 
-    let ship = this.getShip(position);
+    if (cell.shipId !== null) {
+      this.hitEvent.trigger(position);
 
-    if (ship) {
-      ship.hit(position);
-    }
-  }
+      let ship = this.#ships.get(cell.shipId);
+      ship.hit();
 
-  getHitState(position) {
-    let cell = this.#getCell(position);
-
-    if (cell.attacked) {
-      if (cell.shipId === null) {
-        return 'miss';
-      } else {
-        return 'hit';
+      if (ship.isSunk()) {
+        this.sunkEvent.trigger();
+        if (this.#allShipsSunk()) {
+          this.allShipsSunkEvent.trigger();
+        }
       }
     } else {
-      return '-';
+      this.missEvent.trigger(position);
     }
-  }
-
-  allShipsSunk() {
-    for (let ship of this.ships) {
-      if (!ship.isSunk()) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  get ships() {
-    return Array.from(this.#ships.values());
   }
 
   get #nextShipId() {
     let result = this.#shipIdCounter;
     this.#shipIdCounter += 1;
     return result;
+  }
+
+  static #randomBool() {
+    return Math.random() < 0.5;
+  }
+
+  #allShipsSunk() {
+    for (let i = 0; i < this.ships.length; i += 1) {
+      if (!this.ships[i].isSunk()) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  #getCell(position) {
+    let idx = position.row * this.size + position.col;
+
+    return this.#board[idx];
   }
 
   #isValidPosition(position) {
@@ -125,10 +142,11 @@ class Gameboard {
     );
   }
 
-  #getCell(position) {
-    let idx = position.row * this.size + position.col;
-
-    return this.#board[idx];
+  #randomPosition() {
+    return new Position(
+      Math.floor(Math.random() * this.size),
+      Math.floor(Math.random() * this.size)
+    );
   }
 }
 
