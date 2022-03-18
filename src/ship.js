@@ -1,8 +1,10 @@
 class Ship {
   #hitsTaken;
 
-  constructor(length) {
+  constructor(position, length, isHorizontal) {
+    this.position = position;
     this.length = length;
+    this.isHorizontal = isHorizontal;
 
     this.#hitsTaken = 0;
   }
