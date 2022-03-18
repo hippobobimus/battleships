@@ -73,11 +73,11 @@ class Gameboard {
 
   placeShipsRandomly(shipLengths) {
     shipLengths.forEach((length) => {
-      let position = this.#randomPosition();
+      let position = Position.random(this.size);
       let isHorizontal = Gameboard.#randomBool();
 
       while (!this.canPlaceShip(position, length, isHorizontal)) {
-        position = this.#randomPosition();
+        position = Position.random(this.size);
         isHorizontal = Gameboard.#randomBool();
       }
 
@@ -143,13 +143,6 @@ class Gameboard {
       position.row < this.size &&
       position.col >= 0 &&
       position.col < this.size
-    );
-  }
-
-  #randomPosition() {
-    return new Position(
-      Math.floor(Math.random() * this.size),
-      Math.floor(Math.random() * this.size)
     );
   }
 }
