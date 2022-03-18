@@ -10,6 +10,9 @@ class GameController {
     this.player = new Player(GameController.BOARD_SIZE, false);
     this.computer = new Player(GameController.BOARD_SIZE, true);
 
+    this.isGameover = false;
+    this.isPlayerTurn = true;
+
     this.playerView = new GameboardView(
       document.getElementById('content'),
       GameController.BOARD_SIZE
@@ -55,8 +58,25 @@ class GameController {
     });
   }
 
-  onPlayerAttackInputEvent = (position) => {
+  #takeComputerTurn() {
+    if (this.isGameover || this.isPlayerTurn) {
+      return;
+    }
+
+    this.player.gameboard.receiveAttack(this.computer.getAiMove());
+
+    this.isPlayerTurn = true;
+  }
+
+  onPlayerAttackInputEvent = async (position) => {
+    if (this.isGameover || !this.isPlayerTurn) {
+      return;
+    }
+
+    this.isPlayerTurn = false;
     this.computer.gameboard.receiveAttack(position);
+
+    setTimeout(() => this.#takeComputerTurn(), 1000);
   };
 
   onPlayerBoardHitEvent = (position) => {
@@ -86,12 +106,12 @@ class GameController {
 
   onPlayerBoardAllShipsSunkEvent = () => {
     console.log('player loses!');
-    // TODO
+    this.isGameover = true;
   };
 
   onComputerBoardAllShipsSunkEvent = () => {
     console.log('computer loses!');
-    // TODO
+    this.isGameover = true;
   };
 }
 
