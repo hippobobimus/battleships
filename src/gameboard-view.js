@@ -22,6 +22,9 @@ class GameboardView {
 
         cell.classList.add('cell');
 
+        cell.style.gridRow = row + 1;
+        cell.style.gridColumn = col + 1;
+
         cell.addEventListener(
           'click',
           () => this.moveInputEvent.trigger(new Position(row, col)),
@@ -41,6 +44,19 @@ class GameboardView {
 
   displayMiss(position) {
     this.#displayCellImage(MissImage, position);
+  }
+
+  displayShip(position, length, isHorizontal) {
+    let ship = document.createElement('div');
+
+    ship.classList.add('ship');
+
+    let rowsSpanned = isHorizontal ? 1 : length;
+    let colsSpanned = isHorizontal ? length : 1;
+
+    ship.style.gridArea = `${position.row} / ${position.col} / span ${rowsSpanned} / span ${colsSpanned}`;
+
+    this.board.appendChild(ship);
   }
 
   #displayCellImage(image, position) {
