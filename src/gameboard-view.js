@@ -28,7 +28,6 @@ class GameboardView {
         cell.addEventListener(
           'click',
           () => this.moveInputEvent.trigger(new Position(row, col)),
-          { once: true }
         );
 
         this.board.appendChild(cell);
