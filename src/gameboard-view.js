@@ -54,7 +54,9 @@ class GameboardView {
     let rowsSpanned = isHorizontal ? 1 : length;
     let colsSpanned = isHorizontal ? length : 1;
 
-    ship.style.gridArea = `${position.row} / ${position.col} / span ${rowsSpanned} / span ${colsSpanned}`;
+    ship.style.gridArea = `${position.row + 1} / ${
+      position.col + 1
+    } / span ${rowsSpanned} / span ${colsSpanned}`;
 
     this.board.appendChild(ship);
   }
