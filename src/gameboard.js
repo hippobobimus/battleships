@@ -101,7 +101,7 @@ class Gameboard {
       ship.hit();
 
       if (ship.isSunk()) {
-        this.sunkEvent.trigger();
+        this.sunkEvent.trigger(ship.position, ship.length, ship.isHorizontal);
         if (this.#allShipsSunk()) {
           this.allShipsSunkEvent.trigger();
         }
