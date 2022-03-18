@@ -16,8 +16,8 @@
   background-color: grey;
   border: 1px solid black;
   border-radius: 15px;
-  height: 15px;
-  margin: 2px;
+  height: calc(100% - 6px);
+  margin: 3px;
   align-self: center;
   z-index: 1;
 }
