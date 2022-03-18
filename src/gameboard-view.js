@@ -63,12 +63,13 @@ class GameboardView {
     let img = document.createElement('img');
 
     img.classList.add('hit');
+
     img.src = image;
 
-    let cells = this.board.querySelectorAll('.cell');
+    img.style.gridRow = position.row + 1;
+    img.style.gridColumn = position.col + 1;
 
-    let idx = this.gameboardSize * position.row + position.col;
-    cells[idx].appendChild(img);
+    this.board.appendChild(img);
   }
 }
 
