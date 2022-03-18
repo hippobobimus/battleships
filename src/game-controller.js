@@ -3,6 +3,7 @@ import Player from './player.js';
 
 class GameController {
   static BOARD_SIZE = 10;
+
   static SHIP_LENGTHS = [5, 4, 3, 3, 2, 1];
 
   constructor() {
@@ -46,7 +47,11 @@ class GameController {
 
     // display all of the player's ship positions.
     this.player.gameboard.ships.forEach((ship) => {
-      this.playerView.displayShip(ship.position, ship.length, ship.isHorizontal);
+      this.playerView.displayShip(
+        ship.position,
+        ship.length,
+        ship.isHorizontal
+      );
     });
   }
 
@@ -71,13 +76,12 @@ class GameController {
   };
 
   onPlayerBoardSunkEvent = () => {
-    console.log('sunk!');
+    console.log('player ship sunk!');
     // TODO
   };
 
-  onComputerBoardSunkEvent = () => {
-    console.log('sunk!');
-    // TODO
+  onComputerBoardSunkEvent = (position, length, isHorizontal) => {
+    this.computerView.displayShip(position, length, isHorizontal);
   };
 
   onPlayerBoardAllShipsSunkEvent = () => {
