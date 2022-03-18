@@ -43,6 +43,11 @@ class GameController {
   load() {
     this.playerView.load();
     this.computerView.load();
+
+    // display all of the player's ship positions.
+    this.player.gameboard.ships.forEach((ship) => {
+      this.playerView.displayShip(ship.position, ship.length, ship.isHorizontal);
+    });
   }
 
   onPlayerAttackInputEvent = (position) => {
