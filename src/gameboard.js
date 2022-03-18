@@ -57,7 +57,7 @@ class Gameboard {
     }
 
     let id = this.#nextShipId;
-    let ship = new Ship(length);
+    let ship = new Ship(position, length, isHorizontal);
 
     this.#ships.set(id, ship);
 
