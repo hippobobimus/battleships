@@ -99,6 +99,7 @@ class GameboardView {
   }
 
   #loadHeading() {
+    this.#heading.classList.add('board-title');
     this.#heading.innerText = this.#headingStr;
   }
 }

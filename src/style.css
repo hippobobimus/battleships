@@ -1,16 +1,22 @@
+@import url(./colors.css);
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Tourney', cursive;
+  color: var(--text-clr);
+  text-shadow: 2px 2px 3px var(--text-shadow-clr);
 }
 
 :root {
+  background-color: var(--bg-clr);
   font-size: 16px;
 }
 
 #header {
   background-color: grey;
-  box-shadow: 0px 3px 5px grey;
+  box-shadow: 2px 2px 3px var(--shadow-clr);
   height: 70px;
   display: flex;
   align-items: center;
@@ -20,6 +26,6 @@
 #content {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 30px;
   padding: 20px 50px;
 }

@@ -1,3 +1,5 @@
+@import url(./colors.css);
+
 .ui-container {
   display: flex;
   flex-direction: column;
@@ -13,18 +15,19 @@
 }
 
 .cell {
-  background-color: blue;
+  background-color: var(--board-cell-clr);
+  box-shadow: 2px 2px 3px var(--shadow-clr);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .ship {
-  background-color: grey;
-  border: 1px solid black;
+  background-color: var(--board-ship-clr);
   border-radius: 15px;
+  box-shadow: 2px 2px 3px var(--shadow-clr);
   height: calc(100% - 6px);
-  margin: 3px;
+  margin: 1px 3px 3px 1px;
   align-self: center;
   z-index: 1;
 }
