@@ -1,6 +1,7 @@
 @import url(./colors.css);
 
 .ui-container {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -37,4 +38,35 @@
   align-self: center;
   justify-self: center;
   z-index: 2;
+}
+
+.board-message {
+  background-color: grey;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 50px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+.board-message p {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.fade-in {
+  opacity: .85;
+  visibility: visible;
+  transition: visibility 0s, opacity 0.3s linear;
+}
+
+.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  transition: visibility 0s linear 0.3s, opacity 0.3s linear;
 }

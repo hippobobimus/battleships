@@ -17,6 +17,10 @@ class GameboardView {
 
   #board;
 
+  #boardMsg;
+
+  #boardMsgTxt;
+
   constructor(root, gameboardSize, headingStr) {
     this.#root = root;
     this.#gameboardSize = gameboardSize;
@@ -31,14 +35,28 @@ class GameboardView {
 
     this.#heading = document.createElement('h2');
     this.#board = document.createElement('div');
+    this.#boardMsg = document.createElement('div');
 
     this.#container.appendChild(this.#heading);
     this.#container.appendChild(this.#board);
+    this.#board.appendChild(this.#boardMsg);
 
     this.#root.appendChild(this.#container);
 
     this.#loadHeading();
     this.#loadBoard();
+    this.#loadBoardMsg();
+  }
+
+  displayBoardMessage(msgStr) {
+    this.#boardMsgTxt.innerText = msgStr;
+    this.#boardMsg.classList.remove('fade-out');
+    this.#boardMsg.classList.add('fade-in');
+  }
+
+  hideBoardMessage() {
+    this.#boardMsg.classList.remove('fade-in');
+    this.#boardMsg.classList.add('fade-out');
   }
 
   displayHit(position) {
@@ -101,6 +119,12 @@ class GameboardView {
   #loadHeading() {
     this.#heading.classList.add('board-title');
     this.#heading.innerText = this.#headingStr;
+  }
+
+  #loadBoardMsg() {
+    this.#boardMsg.classList.add('board-message', 'fade-out');
+    this.#boardMsgTxt = document.createElement('p');
+    this.#boardMsg.appendChild(this.#boardMsgTxt);
   }
 }
 
