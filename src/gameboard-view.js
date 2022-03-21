@@ -5,36 +5,40 @@ import GameEvent from './game-event.js';
 import Position from './position.js';
 
 class GameboardView {
-  constructor(root, gameboardSize) {
-    this.root = root;
-    this.gameboardSize = gameboardSize;
+  #root;
+
+  #gameboardSize;
+
+  #headingStr;
+
+  #container;
+
+  #heading;
+
+  #board;
+
+  constructor(root, gameboardSize, headingStr) {
+    this.#root = root;
+    this.#gameboardSize = gameboardSize;
+    this.#headingStr = headingStr;
 
     this.moveInputEvent = new GameEvent();
   }
 
   load() {
-    this.board = document.createElement('div');
-    this.board.classList.add('board');
+    this.#container = document.createElement('div');
+    this.#container.classList.add('ui-container');
 
-    for (let row = 0; row < this.gameboardSize; row += 1) {
-      for (let col = 0; col < this.gameboardSize; col += 1) {
-        let cell = document.createElement('div');
+    this.#heading = document.createElement('h2');
+    this.#board = document.createElement('div');
 
-        cell.classList.add('cell');
+    this.#container.appendChild(this.#heading);
+    this.#container.appendChild(this.#board);
 
-        cell.style.gridRow = row + 1;
-        cell.style.gridColumn = col + 1;
+    this.#root.appendChild(this.#container);
 
-        cell.addEventListener(
-          'click',
-          () => this.moveInputEvent.trigger(new Position(row, col)),
-        );
-
-        this.board.appendChild(cell);
-      }
-    }
-
-    this.root.appendChild(this.board);
+    this.#loadHeading();
+    this.#loadBoard();
   }
 
   displayHit(position) {
@@ -57,7 +61,7 @@ class GameboardView {
       position.col + 1
     } / span ${rowsSpanned} / span ${colsSpanned}`;
 
-    this.board.appendChild(ship);
+    this.#board.appendChild(ship);
   }
 
   #displayCellImage(image, position) {
@@ -70,7 +74,32 @@ class GameboardView {
     img.style.gridRow = position.row + 1;
     img.style.gridColumn = position.col + 1;
 
-    this.board.appendChild(img);
+    this.#board.appendChild(img);
+  }
+
+  #loadBoard() {
+    this.#board.classList.add('board');
+
+    for (let row = 0; row < this.#gameboardSize; row += 1) {
+      for (let col = 0; col < this.#gameboardSize; col += 1) {
+        let cell = document.createElement('div');
+
+        cell.classList.add('cell');
+
+        cell.style.gridRow = row + 1;
+        cell.style.gridColumn = col + 1;
+
+        cell.addEventListener('click', () =>
+          this.moveInputEvent.trigger(new Position(row, col))
+        );
+
+        this.#board.appendChild(cell);
+      }
+    }
+  }
+
+  #loadHeading() {
+    this.#heading.innerText = this.#headingStr;
   }
 }
 
