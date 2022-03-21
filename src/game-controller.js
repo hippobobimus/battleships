@@ -16,12 +16,12 @@ class GameController {
     this.playerView = new GameboardView(
       document.getElementById('content'),
       GameController.BOARD_SIZE,
-      'Challenger',
+      'Your Zone',
     );
     this.computerView = new GameboardView(
       document.getElementById('content'),
       GameController.BOARD_SIZE,
-      'Admiral Gizmotron',
+      'The Admiral\'s Zone',
     );
 
     // place ships.
