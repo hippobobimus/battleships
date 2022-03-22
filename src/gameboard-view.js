@@ -48,6 +48,14 @@ class GameboardView {
     this.#loadBoardMsg();
   }
 
+  toggleFade() {
+    if (this.#board.style.opacity === '0.3') {
+      this.#board.style.opacity = 1;
+    } else {
+      this.#board.style.opacity = 0.3;
+    }
+  }
+
   displayBoardMessage(msgStr) {
     this.#boardMsgTxt.innerText = msgStr;
     this.#boardMsg.classList.remove('fade-out');
