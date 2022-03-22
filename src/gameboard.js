@@ -95,16 +95,17 @@ class Gameboard {
     cell.attacked = true;
 
     if (cell.shipId !== null) {
-      this.hitEvent.trigger(position);
-
       let ship = this.#ships.get(cell.shipId);
       ship.hit();
 
       if (ship.isSunk()) {
-        this.sunkEvent.trigger(ship.position, ship.length, ship.isHorizontal);
         if (this.#allShipsSunk()) {
-          this.allShipsSunkEvent.trigger();
+          this.allShipsSunkEvent.trigger(position, ship.position, ship.length, ship.isHorizontal);
+        } else {
+          this.sunkEvent.trigger(position, ship.position, ship.length, ship.isHorizontal);
         }
+      } else {
+        this.hitEvent.trigger(position);
       }
     } else {
       this.missEvent.trigger(position);

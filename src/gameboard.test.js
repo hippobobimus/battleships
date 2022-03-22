@@ -137,14 +137,15 @@ describe('gameboard', () => {
   });
 
   test('sink ship', () => {
-    let size = 5;
+    let size = 10;
     let g = new Gameboard(size);
 
     let length = 3;
-    let pos = new Position(1, 4);
+    let targetPos = new Position(1, 4);
     let isHor = false;
 
-    g.placeShip(pos, length, isHor);
+    g.placeShip(targetPos, length, isHor);
+    g.placeShip(new Position(9, 9), 1, true);
 
     // mock handlers
     let hitHandler = jest.fn();
@@ -160,17 +161,22 @@ describe('gameboard', () => {
     expect(sunkHandler).not.toHaveBeenCalled();
 
     for (let i = 0; i < length; i += 1) {
-      let p = new Position(pos.row + i, pos.col);
+      let p = new Position(targetPos.row + i, targetPos.col);
 
       g.receiveAttack(p);
 
-      expect(hitHandler.mock.calls.length).toBe(i + 1);
-      expect(hitHandler).toHaveBeenCalledWith(p);
       expect(missHandler).not.toHaveBeenCalled();
       if (i < length - 1) {
         expect(sunkHandler).not.toHaveBeenCalled();
+
+        expect(hitHandler.mock.calls.length).toBe(i + 1);
+        expect(hitHandler).toHaveBeenCalledWith(p);
       } else {
         expect(sunkHandler.mock.calls.length).toBe(1);
+        expect(sunkHandler).toHaveBeenCalledWith(p, targetPos, length, isHor);
+
+        expect(hitHandler.mock.calls.length).toBe(i);
+        expect(hitHandler).not.toHaveBeenCalledWith(p);
       }
     }
   });
@@ -230,7 +236,13 @@ describe('gameboard', () => {
       g.receiveAttack(new Position(0, col));
     }
 
-    expect(oneShipSunkHandler.mock.calls.length).toBe(3);
+    expect(oneShipSunkHandler.mock.calls.length).toBe(2);
     expect(allShipsSunkHandler.mock.calls.length).toBe(1);
+    expect(allShipsSunkHandler).toHaveBeenCalledWith(
+      new Position(0, 4),
+      new Position(0, 4),
+      1,
+      true
+    );
   });
 });
