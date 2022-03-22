@@ -25,7 +25,14 @@
 
 #content {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+#boards {
+  display: flex;
   justify-content: center;
   gap: 30px;
-  padding: 20px 50px;
 }

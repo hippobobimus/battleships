@@ -1,11 +1,13 @@
 .ticker {
   background-color: var(--ticker-bg-clr);
   box-shadow: 2px 2px 3px var(--shadow-clr);
+  flex-grow: 0;
   display: flex;
   align-items: center;
   gap: 50px;
-  padding-left: 100%;
+  padding-left: 648px;
   height: 2rem;
+  width: 0px;
   overflow: hidden;
 }
 
