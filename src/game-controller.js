@@ -1,6 +1,6 @@
-import GameboardView from './gameboard-view.js';
+import GameView from './game-view.js';
 import Player from './player.js';
-import TickerView from './ticker-view.js';
+import StartView from './start-view.js';
 
 class GameController {
   static BOARD_SIZE = 10;
@@ -15,26 +15,25 @@ class GameController {
     this.isPlayerTurn = true;
 
     let root = document.getElementById('content');
-    let boards = document.getElementById('boards');
 
-    this.playerView = new GameboardView(
-      boards,
+    this.startView = new StartView(root);
+    this.gameView = new GameView(
+      root,
       GameController.BOARD_SIZE,
-      'Your Zone'
-    );
-    this.computerView = new GameboardView(
-      boards,
-      GameController.BOARD_SIZE,
+      'Your Zone',
       "The Admiral's Zone"
     );
-    this.tickerView = new TickerView(root);
 
     // place ships.
     this.player.gameboard.placeShipsRandomly(GameController.SHIP_LENGTHS);
     this.computer.gameboard.placeShipsRandomly(GameController.SHIP_LENGTHS);
 
     // events
-    this.computerView.moveInputEvent.addHandler(this.onPlayerAttackInputEvent);
+    this.startView.startEvent.addHandler(this.onStartGameEvent);
+
+    this.gameView.computer.moveInputEvent.addHandler(
+      this.onPlayerAttackInputEvent
+    );
 
     this.player.gameboard.hitEvent.addHandler(this.onPlayerBoardHitEvent);
     this.player.gameboard.missEvent.addHandler(this.onPlayerBoardMissEvent);
@@ -51,22 +50,58 @@ class GameController {
     );
   }
 
-  load() {
-    this.playerView.load();
-    this.computerView.load();
-    this.tickerView.load();
+  start() {
+    this.startView.load();
+  }
+
+  onStartGameEvent = () => {
+    this.startView.clear();
+
+    this.gameView.load();
 
     // display all of the player's ship positions.
     this.player.gameboard.ships.forEach((ship) => {
-      this.playerView.displayShip(
+      this.gameView.player.displayShip(
         ship.position,
         ship.length,
         ship.isHorizontal
       );
     });
 
-    this.playerView.fade();
-  }
+    this.gameView.player.fade();
+  };
+
+  onPlayerAttackInputEvent = async (position) => {
+    if (this.isGameover || !this.isPlayerTurn) {
+      return;
+    }
+
+    this.gameView.ticker.clear();
+
+    this.isPlayerTurn = false;
+    this.computer.gameboard.receiveAttack(position);
+
+    setTimeout(() => {
+      if (!this.isGameover) {
+        this.gameView.computer.fade();
+        this.gameView.player.clearFade();
+      }
+    }, 2000);
+
+    setTimeout(() => {
+      this.#takeComputerTurn();
+      setTimeout(() => {
+        if (!this.isGameover) {
+          this.gameView.computer.clearFade();
+          this.gameView.player.fade();
+          this.gameView.ticker.displayMessage(
+            "Select a target in the Admiral's zone"
+          );
+        }
+        this.isPlayerTurn = true;
+      }, 2000);
+    }, 2500);
+  };
 
   #takeComputerTurn() {
     if (this.isGameover || this.isPlayerTurn) {
@@ -76,66 +111,34 @@ class GameController {
     this.player.gameboard.receiveAttack(this.computer.getAiMove());
   }
 
-  onPlayerAttackInputEvent = async (position) => {
-    if (this.isGameover || !this.isPlayerTurn) {
-      return;
-    }
-
-    this.tickerView.clear();
-
-    this.isPlayerTurn = false;
-    this.computer.gameboard.receiveAttack(position);
-
-    setTimeout(() => {
-      if (!this.isGameover) {
-        this.computerView.fade();
-        this.playerView.clearFade();
-      }
-    }, 2000);
-
-    setTimeout(() => {
-      this.#takeComputerTurn();
-      setTimeout(() => {
-        if (!this.isGameover) {
-          this.computerView.clearFade();
-          this.playerView.fade();
-          this.tickerView.displayMessage(
-            "Select a target in the Admiral's zone"
-          );
-        }
-        this.isPlayerTurn = true;
-      }, 2000);
-    }, 2500);
-  };
-
   onPlayerBoardHitEvent = (position) => {
-    this.playerView.displayHit(position);
-    this.playerView.displayBoardMessage('Hit!');
-    setTimeout(() => this.playerView.hideBoardMessage(), 1500);
+    this.gameView.player.displayHit(position);
+    this.gameView.player.displayBoardMessage('Hit!');
+    setTimeout(() => this.gameView.player.hideBoardMessage(), 1500);
   };
 
   onComputerBoardHitEvent = (position) => {
-    this.computerView.displayHit(position);
-    this.computerView.displayBoardMessage('Hit!');
-    setTimeout(() => this.computerView.hideBoardMessage(), 1500);
+    this.gameView.computer.displayHit(position);
+    this.gameView.computer.displayBoardMessage('Hit!');
+    setTimeout(() => this.gameView.computer.hideBoardMessage(), 1500);
   };
 
   onPlayerBoardMissEvent = (position) => {
-    this.playerView.displayMiss(position);
-    this.playerView.displayBoardMessage('Miss!');
-    setTimeout(() => this.playerView.hideBoardMessage(), 1500);
+    this.gameView.player.displayMiss(position);
+    this.gameView.player.displayBoardMessage('Miss!');
+    setTimeout(() => this.gameView.player.hideBoardMessage(), 1500);
   };
 
   onComputerBoardMissEvent = (position) => {
-    this.computerView.displayMiss(position);
-    this.computerView.displayBoardMessage('Miss!');
-    setTimeout(() => this.computerView.hideBoardMessage(), 1500);
+    this.gameView.computer.displayMiss(position);
+    this.gameView.computer.displayBoardMessage('Miss!');
+    setTimeout(() => this.gameView.computer.hideBoardMessage(), 1500);
   };
 
   onPlayerBoardSunkEvent = (hitPosition) => {
-    this.playerView.displayHit(hitPosition);
-    this.playerView.displayBoardMessage('Ship sunk!');
-    setTimeout(() => this.playerView.hideBoardMessage(), 1500);
+    this.gameView.player.displayHit(hitPosition);
+    this.gameView.player.displayBoardMessage('Ship sunk!');
+    setTimeout(() => this.gameView.player.hideBoardMessage(), 1500);
   };
 
   onComputerBoardSunkEvent = (
@@ -144,10 +147,10 @@ class GameController {
     shipLength,
     shipIsHor
   ) => {
-    this.computerView.displayShip(shipPosition, shipLength, shipIsHor);
-    this.computerView.displayHit(hitPosition);
-    this.computerView.displayBoardMessage('Ship sunk!');
-    setTimeout(() => this.computerView.hideBoardMessage(), 1500);
+    this.gameView.computer.displayShip(shipPosition, shipLength, shipIsHor);
+    this.gameView.computer.displayHit(hitPosition);
+    this.gameView.computer.displayBoardMessage('Ship sunk!');
+    setTimeout(() => this.gameView.computer.hideBoardMessage(), 1500);
   };
 
   onPlayerBoardAllShipsSunkEvent = (
@@ -157,11 +160,11 @@ class GameController {
     shipIsHor
   ) => {
     this.isGameover = true;
-    this.tickerView.displayMessage('YOU HAVE BEEN DEFEATED');
-    this.playerView.displayShip(shipPosition, shipLength, shipIsHor);
-    this.playerView.displayHit(hitPosition);
-    this.playerView.displayBoardMessage('Fleet sunk!');
-    setTimeout(() => this.playerView.fade(), 2500);
+    this.gameView.ticker.displayMessage('YOU HAVE BEEN DEFEATED');
+    this.gameView.player.displayShip(shipPosition, shipLength, shipIsHor);
+    this.gameView.player.displayHit(hitPosition);
+    this.gameView.player.displayBoardMessage('Fleet sunk!');
+    setTimeout(() => this.gameView.player.fade(), 2500);
   };
 
   onComputerBoardAllShipsSunkEvent = (
@@ -171,11 +174,11 @@ class GameController {
     shipIsHor
   ) => {
     this.isGameover = true;
-    this.tickerView.displayMessage('YOU ARE VICTORIOUS');
-    this.computerView.displayShip(shipPosition, shipLength, shipIsHor);
-    this.computerView.displayHit(hitPosition);
-    this.computerView.displayBoardMessage('Fleet sunk!');
-    setTimeout(() => this.computerView.fade(), 2500);
+    this.gameView.ticker.displayMessage('YOU ARE VICTORIOUS');
+    this.gameView.computer.displayShip(shipPosition, shipLength, shipIsHor);
+    this.gameView.computer.displayHit(hitPosition);
+    this.gameView.computer.displayBoardMessage('Fleet sunk!');
+    setTimeout(() => this.gameView.computer.fade(), 2500);
   };
 }
 
