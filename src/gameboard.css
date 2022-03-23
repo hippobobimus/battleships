@@ -25,6 +25,18 @@
   justify-content: center;
 }
 
+.ui-container.active .board {
+  cursor: none;
+}
+
+.crosshairs {
+  display: none;
+}
+
+.ui-container.active .cell:hover .crosshairs {
+  display: block;
+}
+
 .ship {
   background-color: var(--board-ship-clr);
   border-radius: 15px;
@@ -62,7 +74,7 @@
 }
 
 .fade-in {
-  opacity: .85;
+  opacity: 0.85;
   visibility: visible;
   transition: visibility 0s, opacity 0.3s linear;
 }

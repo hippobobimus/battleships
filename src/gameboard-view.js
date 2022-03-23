@@ -1,4 +1,5 @@
 import './gameboard.css';
+import CrosshairsImage from './assets/game-graphics/crosshairs.svg';
 import HitImage from './assets/game-graphics/hit.svg';
 import MissImage from './assets/game-graphics/miss.svg';
 import GameEvent from './game-event.js';
@@ -31,7 +32,7 @@ class GameboardView {
 
   load() {
     this.#container = document.createElement('div');
-    this.#container.classList.add('ui-container');
+    this.#container.classList.add('ui-container', 'active');
 
     this.#heading = document.createElement('h2');
     this.#board = document.createElement('div');
@@ -49,6 +50,8 @@ class GameboardView {
   }
 
   fade() {
+    this.#container.classList.remove('active');
+
     if (window.matchMedia('(max-width: 768px)').matches) {
       this.#container.style.display = 'none';
     } else {
@@ -57,6 +60,8 @@ class GameboardView {
   }
 
   clearFade() {
+    this.#container.classList.add('active');
+
     this.#container.style.display = 'flex';
     this.#container.style.opacity = 1;
   }
@@ -114,6 +119,10 @@ class GameboardView {
     for (let row = 0; row < this.#gameboardSize; row += 1) {
       for (let col = 0; col < this.#gameboardSize; col += 1) {
         let cell = document.createElement('div');
+        let crosshairs = document.createElement('img');
+
+        crosshairs.classList.add('crosshairs');
+        crosshairs.src = CrosshairsImage;
 
         cell.classList.add('cell');
 
@@ -123,6 +132,8 @@ class GameboardView {
         cell.addEventListener('click', () =>
           this.moveInputEvent.trigger(new Position(row, col))
         );
+
+        cell.appendChild(crosshairs);
 
         this.#board.appendChild(cell);
       }
