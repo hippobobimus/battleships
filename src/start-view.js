@@ -29,6 +29,10 @@ class StartView {
     this.#root.appendChild(img);
     this.#root.appendChild(startBtn);
   }
+
+  clear() {
+    this.#root.innerHTML = '';
+  }
 }
 
 export default StartView;
