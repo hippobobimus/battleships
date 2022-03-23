@@ -34,6 +34,7 @@ class GameController {
     this.gameView.computer.moveInputEvent.addHandler(
       this.onPlayerAttackInputEvent
     );
+    this.gameView.resetEvent.addHandler(() => window.location.reload());
 
     this.player.gameboard.hitEvent.addHandler(this.onPlayerBoardHitEvent);
     this.player.gameboard.missEvent.addHandler(this.onPlayerBoardMissEvent);
@@ -164,7 +165,10 @@ class GameController {
     this.gameView.player.displayShip(shipPosition, shipLength, shipIsHor);
     this.gameView.player.displayHit(hitPosition);
     this.gameView.player.displayBoardMessage('Fleet sunk!');
-    setTimeout(() => this.gameView.player.fade(), 2500);
+    setTimeout(() => {
+      this.gameView.player.fade();
+      this.gameView.displayPlayAgain();
+    }, 2500);
   };
 
   onComputerBoardAllShipsSunkEvent = (
@@ -178,7 +182,10 @@ class GameController {
     this.gameView.computer.displayShip(shipPosition, shipLength, shipIsHor);
     this.gameView.computer.displayHit(hitPosition);
     this.gameView.computer.displayBoardMessage('Fleet sunk!');
-    setTimeout(() => this.gameView.computer.fade(), 2500);
+    setTimeout(() => {
+      this.gameView.computer.fade();
+      this.gameView.displayPlayAgain();
+    }, 2500);
   };
 }
 
