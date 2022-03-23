@@ -49,11 +49,16 @@ class GameboardView {
   }
 
   fade() {
-    this.#board.style.opacity = 0.3;
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      this.#container.style.display = 'none';
+    } else {
+      this.#container.style.opacity = 0.3;
+    }
   }
 
   clearFade() {
-    this.#board.style.opacity = 1;
+    this.#container.style.display = 'flex';
+    this.#container.style.opacity = 1;
   }
 
   displayBoardMessage(msgStr) {
