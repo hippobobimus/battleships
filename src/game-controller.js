@@ -3,9 +3,9 @@ import Player from './player.js';
 import StartView from './start-view.js';
 
 class GameController {
-  static BOARD_SIZE = 10;
+  static BOARD_SIZE = 8;
 
-  static SHIP_LENGTHS = [5, 4, 3, 3, 2, 1];
+  static SHIP_LENGTHS = [4, 3, 3, 2, 2, 2];
 
   constructor() {
     this.player = new Player(GameController.BOARD_SIZE, false);
