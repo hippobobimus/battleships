@@ -9,22 +9,3 @@ img.admiral {
   margin: 20px;
   filter: drop-shadow(2px 2px 3px var(--shadow-clr));
 }
-
-div.start-btn {
-  background-color: var(--btn-bg-clr);
-  border-radius: 15px;
-  box-shadow: 2px 2px 3px var(--shadow-clr);
-  font-size: 2rem;
-  font-weight: bold;
-  user-select: none;
-  padding: 10px 20px;
-}
-
-div.start-btn:hover {
-  cursor: pointer;
-}
-
-div.start-btn:active {
-  box-shadow: none;
-  transform: translate(2px, 2px);
-}

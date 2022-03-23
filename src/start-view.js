@@ -1,3 +1,4 @@
+import './button.css';
 import './start.css';
 import GameEvent from './game-event.js';
 import RobotImage from './assets/game-graphics/admiral.svg';
@@ -21,7 +22,7 @@ class StartView {
     tagline.classList.add('tagline');
     tagline.innerText = 'Can you defeat Admiral Gizmotron?';
 
-    startBtn.classList.add('start-btn');
+    startBtn.classList.add('btn');
     startBtn.innerText = 'Start';
     startBtn.addEventListener('click', () => this.startEvent.trigger());
 
