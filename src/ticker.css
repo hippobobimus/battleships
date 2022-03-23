@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   gap: 50px;
-  padding-left: 648px;
+  padding-left: 100%;
   height: 2rem;
   width: 0px;
   overflow: hidden;
@@ -14,11 +14,12 @@
 .ticker p {
   font-weight: bold;
   white-space: nowrap;
-  animation: ticker 30s infinite linear;
+  animation: ticker 0.5s 1 ease;
+  animation-fill-mode: forwards;
 }
 
 @keyframes ticker {
   100% {
-    transform: translateX(-550%);
+    transform: translateX(calc(-50vw - 50%));
   }
 }

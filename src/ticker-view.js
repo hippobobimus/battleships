@@ -10,7 +10,7 @@ class TickerView {
   }
 
   load() {
-    this.#ticker= document.createElement('div');
+    this.#ticker = document.createElement('div');
 
     this.#root.appendChild(this.#ticker);
 
@@ -27,9 +27,7 @@ class TickerView {
     let tickerText = document.createElement('p');
     tickerText.innerText = '--- ' + msgStr + ' ---';
 
-    for (let i = 0; i < 3; i += 1) {
-      this.#ticker.appendChild(tickerText.cloneNode(true));
-    }
+    this.#ticker.appendChild(tickerText);
   }
 
   clear() {
