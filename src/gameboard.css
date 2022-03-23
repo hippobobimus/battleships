@@ -1,18 +1,20 @@
 @import url(./colors.css);
+@import url(./globals.css);
 
 .ui-container {
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  align-items: center;
   gap: 10px;
 }
 
 .board {
   display: grid;
   gap: 1px;
-  grid-template-rows: repeat(10, 30px);
-  grid-template-columns: repeat(10, 30px);
+  grid-template-rows: repeat(var(--board-size), max(30px, min(4vw, 4vh)));
+  grid-template-columns: repeat(var(--board-size), max(30px, min(4vw, 4vh)));
 }
 
 .cell {
