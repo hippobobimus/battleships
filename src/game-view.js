@@ -1,4 +1,5 @@
 import './button.css';
+import './game.css';
 import GameEvent from './game-event.js';
 import GameboardView from './gameboard-view.js';
 import TickerView from './ticker-view.js';
@@ -12,19 +13,20 @@ class GameView {
     this.boards = document.createElement('div');
     this.boards.id = 'boards';
 
+    this.ticker = new TickerView(root);
     this.player = new GameboardView(this.boards, boardSize, playerTitleStr);
     this.computer = new GameboardView(this.boards, boardSize, computerTitleStr);
-    this.ticker = new TickerView(root);
 
     this.resetEvent = new GameEvent();
   }
 
   load() {
+    this.ticker.load();
+
     this.#root.appendChild(this.boards);
 
     this.player.load();
     this.computer.load();
-    this.ticker.load();
   }
 
   displayPlayAgain() {
