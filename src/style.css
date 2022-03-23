@@ -30,9 +30,3 @@
   gap: 20px;
   padding: 20px 0;
 }
-
-#boards {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-}
